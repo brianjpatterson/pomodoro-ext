@@ -17,6 +17,11 @@
 // await chrome.windows.update(tab.windowId, { focused: true });
 // });
 
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => {
+  startTimer();
+});
+
 const remainingTime = {
   total: 0,
   minutes: 0,
@@ -26,22 +31,31 @@ const remainingTime = {
 let interval;
 
 function initTimer(len) {
-  remainingTime.total = Number.parseInt(len / 1000, 10);
+  remainingTime.total = Number.parseInt(len, 10);
   remainingTime.minutes = Number.parseInt((remainingTime.total / 60) % 60, 10);
   remainingTime.seconds = Number.parseInt(remainingTime.total % 60, 10);
 }
 
 function startTimer() {
-  const pomo_time = 25 * 60 * 1000;
-  const endTime = Date.parse(new Date()) + pomo_time;
+  const pomo_time = 25 * 60;
 
   initTimer(pomo_time);
 
-  interval = setInterval(function () {}, 1000);
+  interval = setInterval(function () {
+    remainingTime.total--;
+    remainingTime.minutes = Number.parseInt(
+      (remainingTime.total / 60) % 60,
+      10
+    );
+    remainingTime.seconds = Number.parseInt(remainingTime.total % 60, 10);
+    updateTimer();
+    if (remainingTime.total <= 0) {
+      clearInterval(interval);
+    }
+  }, 1000);
 }
 
 function updateTimer() {
-  const { remainingTime } = timer;
   const minutes = `${remainingTime.minutes}`.padStart(2, "0");
   const seconds = `${remainingTime.seconds}`.padStart(2, "0");
 
