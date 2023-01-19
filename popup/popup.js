@@ -1,35 +1,97 @@
-const tabs = await chrome.tabs.query({
-  url: [
-    "https://developer.chrome.com/docs/webstore/*",
-    "https://developer.chrome.com/docs/extensions/*",
-  ],
+//const pomo_history = document.getElementById("pomo_history");
+
+//const pomo_template = document.getElementById("pomodoro_template");
+//const short_template = document.getElementById("short_break_template");
+//const long_template = document.getElementById("long_break_template");
+
+//const pomo_element = pomo_template.content.firstElementChild.cloneNode(true);
+//const pomo_element1 = pomo_template.content.firstElementChild.cloneNode(true);
+//const short_element = short_template.content.firstElementChild.cloneNode(true);
+//const long_element = long_template.content.firstElementChild.cloneNode(true);
+
+//  element.querySelector(".title").textContent = title;
+//element.querySelector(".pathname").textContent = pathname;
+//  element.querySelector("a").addEventListener("click", async () => {
+// need to focus window as well as the active tab
+//  await chrome.tabs.update(tab.id, { active: true });
+// await chrome.windows.update(tab.windowId, { focused: true });
+// });
+
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => {
+  startTimer();
 });
 
-const collator = new Intl.Collator();
-tabs.sort((a, b) => collator.compare(a.title, b.title));
+const remainingTime = {
+  total: 0,
+  minutes: 0,
+  seconds: 0,
+};
 
-const template = document.getElementById("li_template");
-const elements = new Set();
-for (const tab of tabs) {
-  const element = template.content.firstElementChild.cloneNode(true);
+let interval;
 
-  const title = tab.title.split("-")[0].trim();
-  const pathname = new URL(tab.url).pathname.slice("/docs".length);
-
-  element.querySelector(".title").textContent = title;
-  element.querySelector(".pathname").textContent = pathname;
-  element.querySelector("a").addEventListener("click", async () => {
-    // need to focus window as well as the active tab
-    await chrome.tabs.update(tab.id, { active: true });
-    await chrome.windows.update(tab.windowId, { focused: true });
-  });
-
-  elements.add(element);
+function initTimer(len) {
+  remainingTime.total = Number.parseInt(len, 10);
+  remainingTime.minutes = Number.parseInt((remainingTime.total / 60) % 60, 10);
+  remainingTime.seconds = Number.parseInt(remainingTime.total % 60, 10);
 }
-document.querySelector("ul").append(...elements);
-const button = document.querySelector("button");
-button.addEventListener("click", async () => {
-  const tabIds = tabs.map(({ id }) => id);
-  const group = await chrome.tabs.group({ tabIds });
-  await chrome.tabGroups.update(group, { title: "DOCS" });
-});
+
+function startTimer() {
+  const pomo_time = 25 * 60;
+
+  initTimer(pomo_time);
+
+  interval = setInterval(function () {
+    remainingTime.total--;
+    remainingTime.minutes = Number.parseInt(
+      (remainingTime.total / 60) % 60,
+      10
+    );
+    remainingTime.seconds = Number.parseInt(remainingTime.total % 60, 10);
+    updateTimer();
+    if (remainingTime.total <= 0) {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const minutes = `${remainingTime.minutes}`.padStart(2, "0");
+  const seconds = `${remainingTime.seconds}`.padStart(2, "0");
+
+  const min = document.getElementById("pomo_minutes");
+  const sec = document.getElementById("pomo_seconds");
+
+  min.textContent = minutes;
+  sec.textContent = seconds;
+}
+
+//const state = {
+//pomodoros = [
+// { description: 'Task', timeRemaining: ptime }
+// ]
+//}
+
+//pomo_history.appendChild(pomo_element);
+//pomo_history.appendChild(short_element);
+//pomo_history.appendChild(pomo_element1);
+
+//function createElement(description) {
+// const element = document.getElementById("pomodoro_template");
+// const pomodoro = element.content.firstElementChild.cloneNode(true);
+//  pomodoro.textContent = description;
+//  return pomodoro;
+//}
+
+//pomo_history.appendChild(createElement("Eat boogers"));
+//pomo_history.appendChild(createElement("Eat boogers"));
+//pomo_history.appendChild(createElement("Eat boogers"));
+
+//setInterval(function () {
+// Clear the list of pomodoros.
+
+//const $pomodoro = state.pomodoros.map(createElement);
+// $pomodoro.map(function ($pomodoro) {
+//   pomo_history.appendChild($pomodoro)
+// }
+//}, 1000)

@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <template id="pomodoro_template">
+      <li>
+        <span>Task Description</span>
+        <span>25:00</span>
+      </li>
+    </template>
 
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./popup.css" />
-    </head>
-    <body>
+    <template id="short_break_template">
+      <li>
+        <span>Short Break</span>
+        <span>5:00</span>
+      </li>
+    </template>
 
-        <template id="li_template">
+    <template id="long_break_template">
+      <li>
+        <span>Long Break</span>
+        <span>15:00</span>
+      </li>
+    </template>
 
-            <li>
-                <a>
-                    <h3 class="title">Tab Title</h3>
-                    <p class="pathname">Tab Pathname</p>
-                </a>
-            </li>
-        </template>
+    <h1>Pomodoro Tracker</h1>
 
-        <h1>Pomodoro Tracker</h1>
-        <button>Pomodoro</button>
-        <button>Short Break</button>
-        <button>Long Break</button>
-        <br />
-        <span class="minutes">25</span> : <span class="seconds">00</span>
-        <button>Start Task</button>
-        <br />
-        <input style="width: 95%" type="text" placeholder="Describe current task"/>
-        <ul></ul>
-    
-    
-        <script src="./popup.js" type="module"></script>
-    </body>
+    <div class="timer">
+      <span id="pomo_minutes">25</span> : <span id="pomo_seconds">00</span>
+    </div>
+    <button id="start">Start Task</button>
+    <button id="stop">Stop Timer</button>
+    <br />
+    <ul id="pomo_history"></ul>
+
+    <script src="./popup.js" type="module"></script>
+  </body>
 </html>
